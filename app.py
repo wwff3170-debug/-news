@@ -45,9 +45,18 @@ def init_db():
     conn.close()
 
 
-@app.before_first_request
-def _startup():
-    init_db()
+# 删除或替换下面这行注释掉的代码
+# @app.before_first_request
+# def _startup():
+#     init_db()
+
+# 添加这个上下文处理器，确保数据库初始化
+@app.before_request
+def initialize_database():
+    # 只在第一次请求时初始化数据库
+    if not hasattr(app, 'database_initialized'):
+        init_db()
+        app.database_initialized = True
 
 
 @app.route("/")
@@ -135,5 +144,8 @@ def admin_delete(paper_id):
 
 
 if __name__ == "__main__":
+    # 确保在运行前初始化数据库
+    with app.app_context():
+        init_db()
     # 本地运行
     app.run(host="0.0.0.0", port=5000, debug=True)
