@@ -30,7 +30,7 @@ def init_db():
     """)
     conn.commit()
 
-    # 如果数据库为空，插入一些示例（可删）
+    # 如果数据库为空，插入一些示例
     cur.execute("SELECT COUNT(*) AS c FROM newspapers")
     if cur.fetchone()["c"] == 0:
         cur.executemany(
@@ -45,18 +45,9 @@ def init_db():
     conn.close()
 
 
-# 删除或替换下面这行注释掉的代码
-# @app.before_first_request
-# def _startup():
-#     init_db()
-
-# 添加这个上下文处理器，确保数据库初始化
-@app.before_request
-def initialize_database():
-    # 只在第一次请求时初始化数据库
-    if not hasattr(app, 'database_initialized'):
-        init_db()
-        app.database_initialized = True
+# 初始化数据库
+with app.app_context():
+    init_db()
 
 
 @app.route("/")
@@ -69,7 +60,6 @@ def index():
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
-    # 未登录 -> 显示欢迎 + 密码输入
     if not session.get("is_admin"):
         if request.method == "POST":
             pwd = request.form.get("password", "")
@@ -143,10 +133,6 @@ def admin_delete(paper_id):
     return redirect(url_for("admin_panel"))
 
 
-# 修改 app.py 的末尾部分
 if __name__ == "__main__":
-    # 初始化数据库
-    init_db()
-    # 从环境变量获取端口，Koyeb 使用 8080
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)  # 生产环境关闭 debug
+    app.run(host="0.0.0.0", port=port)
