@@ -143,9 +143,10 @@ def admin_delete(paper_id):
     return redirect(url_for("admin_panel"))
 
 
+# 修改 app.py 的末尾部分
 if __name__ == "__main__":
-    # 确保在运行前初始化数据库
-    with app.app_context():
-        init_db()
-    # 本地运行
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # 初始化数据库
+    init_db()
+    # 从环境变量获取端口，Koyeb 使用 8080
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)  # 生产环境关闭 debug
