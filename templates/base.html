@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>报刊导航</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">NationNews</div>
+      <nav class="nav">
+        <a class="nav-item {% if request.path == '/' %}active{% endif %}" href="{{ url_for('index') }}">
+          报刊导航
+        </a>
+        <a class="nav-item {% if request.path.startswith('/admin') %}active{% endif %}" href="{{ url_for('admin') }}">
+          管理员
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flash">
+            {% for m in messages %}<div class="flash-item">{{ m }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

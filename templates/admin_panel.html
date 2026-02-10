@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <h1>报刊管理</h1>
+    <a class="link" href="{{ url_for('admin_logout') }}">退出管理员</a>
+  </div>
+
+  <section class="panel">
+    <h2>新增报刊</h2>
+    <form class="form-inline" method="post" action="{{ url_for('admin_add') }}">
+      <input name="name" placeholder="报刊名称" required />
+      <input name="url" placeholder="报刊网址（含 http/https）" required />
+      <button type="submit">新增</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>已有报刊</h2>
+    <div class="table">
+      <div class="tr th">
+        <div>名称</div>
+        <div>网址</div>
+        <div>操作</div>
+      </div>
+
+      {% for p in papers %}
+        <div class="tr">
+          <form class="edit-row" method="post" action="{{ url_for('admin_edit', paper_id=p['id']) }}">
+            <input name="name" value="{{ p['name'] }}" required />
+            <input name="url" value="{{ p['url'] }}" required />
+            <div class="actions">
+              <button type="submit">保存</button>
+            </div>
+          </form>
+
+          <form method="post" action="{{ url_for('admin_delete', paper_id=p['id']) }}"
+                onsubmit="return confirm('确认删除：{{ p['name'] }} ?');">
+            <button class="danger" type="submit">删除</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

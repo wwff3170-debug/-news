@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>报刊导航</h1>
+  <div class="grid">
+    {% for p in papers %}
+      <a class="card" href="{{ p['url'] }}" target="_blank" rel="noopener noreferrer">
+        <div class="card-title">{{ p['name'] }}</div>
+        <div class="card-url">{{ p['url'] }}</div>
+      </a>
+    {% endfor %}
+  </div>
+{% endblock %}
